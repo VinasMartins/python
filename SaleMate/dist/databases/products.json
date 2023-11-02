@@ -1,0 +1,22 @@
+[
+    {
+        "ID": "71682462-cca2-424b-b4a0-930a11e187c0",
+        "Nome": "1",
+        "Materiais": [
+            {
+                "Material ID": "4f07c92a-8a8d-4203-b297-f216cb50e9bc",
+                "Material": "Valor Hora",
+                "Unidade de Medida": "Minutos",
+                "Quantidade Utilizada": 1.0,
+                "Valor Gasto": 0.4166666666666667
+            }
+        ],
+        "Preco de Custo": 0.0,
+        "Margem de Lucro Atacado": 1,
+        "Margem de Lucro Varejo": 1,
+        "Preco Sugerido Atacado": 0.4166666666666667,
+        "Preco Sugerido Varejo": 0.4166666666666667,
+        "Calcula Tempo Gasto": "Sim",
+        "Tipo": "Produto"
+    }
+]
