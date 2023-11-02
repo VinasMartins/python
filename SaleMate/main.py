@@ -116,7 +116,7 @@ class SaleMate:
 
         # Cria uma janela popup para a edição de materiais
         self.janela_popup_material = tk.Toplevel(self.aba_materiais)
-        self.janela_popup_material.title("Edição de Recurso")
+        self.janela_popup_material.title("Cadastro de Recurso")
         self.janela_popup_material.iconbitmap('images/logo2.ico')
 
         self.define_screen_size(self.janela_popup_material, 580,180)
