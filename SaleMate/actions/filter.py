@@ -30,42 +30,6 @@ def filter_list(self, filter_by, entity):
             else:
                 self.lista_produtos.selection_remove(item)
 
-# def atualizar_combobox_materiais(self, *args, is_filter=False):
-#     tipo_produto = self.combobox_tipo.get()
-#     self.product_type = tipo_produto
-    
-#     texto_pesquisa = self.var_filtro_materiais.get()
-
-#     # product_list = [f"{produto['Nome']}" for produto in sorted(self.produtos, key=lambda x: x["Nome"])]
-#     # material_list = [f"{material['Nome']} [{material['Unidade de Medida']}]" for material in sorted(self.materiais, key=lambda x: x["Nome"])]
-
-#     if tipo_produto == "Combo":
-#         self.combobox_calcula_tempo.set("N\u00e3o")
-#         self.combobox_calcula_tempo.config(state='disable')
-#         # Defina os valores possíveis para combobox de materiais com base na lista de produtos para compor um combo
-#         if is_filter:
-#             self.combobox_materiais['values'] = [f"{produto['Nome']}" for produto in sorted(self.produtos, key=lambda x: x["Nome"]) if texto_pesquisa.lower() in produto["Nome"].lower() and produto["Tipo"] != 'Combo']
-#         else:
-#             self.combobox_materiais['values'] = [f"{produto['Nome']}" for produto in sorted(self.produtos, key=lambda x: x["Nome"]) if produto["Tipo"] != 'Combo']
-#     elif tipo_produto == 'Serviço':
-#         self.combobox_calcula_tempo.config(state='enable')
-#         self.combobox_calcula_tempo.set("N\u00e3o")
-#         # Use a lista de produtos e materiais para preencher o combobox de materiais
-#         combined_list = [f"{produto['Nome']}" for produto in sorted(self.produtos, key=lambda x: x["Nome"])]
-#         combined_list.extend([f"{material['Nome']} [{material['Unidade de Medida']}]" for material in sorted(self.materiais, key=lambda x: x["Nome"])])
-#         if is_filter:
-#             self.combobox_materiais['values'] = [item for item in combined_list if texto_pesquisa.lower() in item.lower()]
-#         else:
-#             self.combobox_materiais['values'] = combined_list
-#     else:
-#         self.combobox_calcula_tempo.config(state='enable')
-#         self.combobox_calcula_tempo.set("Sim")
-#         # Defina os valores do combobox de materiais com base na lista de materiais existente
-#         if is_filter:
-#             self.combobox_materiais['values'] = [f"{material['Nome']} [{material['Unidade de Medida']}]" for material in sorted(self.materiais, key=lambda x: x["Nome"]) if texto_pesquisa.lower() in material["Nome"].lower()]
-#         else:
-#             self.combobox_materiais['values'] = [f"{material['Nome']} [{material['Unidade de Medida']}]" for material in sorted(self.materiais, key=lambda x: x["Nome"])]
-
 def atualizar_combobox_materiais(self, *args, is_filter=False):
     tipo_produto = self.combobox_tipo.get()
     self.product_type = tipo_produto
