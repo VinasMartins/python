@@ -30,6 +30,7 @@ imports:
  &#8226;   <a href="#collections">collections</a>
  &#8226;   <a href="#collections.abc">collections.abc</a>
  &#8226;   <a href="#copyreg">copyreg</a>
+ &#8226;   <a href="#datetime">datetime</a>
  &#8226;   <a href="#encodings">encodings</a>
  &#8226;   <a href="#encodings.aliases">encodings.aliases</a>
  &#8226;   <a href="#encodings.ascii">encodings.ascii</a>
@@ -170,10 +171,10 @@ imports:
  &#8226;   <a href="#pyi_rth_inspect.py">pyi_rth_inspect.py</a>
  &#8226;   <a href="#re">re</a>
  &#8226;   <a href="#reprlib">reprlib</a>
- &#8226;   <a href="#resources.config_menu">resources.config_menu</a>
- &#8226;   <a href="#resources.create_resources_tab">resources.create_resources_tab</a>
- &#8226;   <a href="#resources.create_products_tab">resources.create_products_tab</a>
+ &#8226;   <a href="#resources.catalog_tab">resources.catalog_tab</a>
+ &#8226;   <a href="#resources.main_menu">resources.main_menu</a>
  &#8226;   <a href="#resources.refresher">resources.refresher</a>
+ &#8226;   <a href="#resources.resources_tab">resources.resources_tab</a>
  &#8226;   <a href="#sre_compile">sre_compile</a>
  &#8226;   <a href="#sre_constants">sre_constants</a>
  &#8226;   <a href="#sre_parse">sre_parse</a>
@@ -191,7 +192,6 @@ imports:
  &#8226;   <a href="#urllib.request">urllib.request</a>
  &#8226;   <a href="#urllib.response">urllib.response</a>
  &#8226;   <a href="#urllib.robotparser">urllib.robotparser</a>
- &#8226;   <a href="#uuid">uuid</a>
  &#8226;   <a href="#warnings">warnings</a>
  &#8226;   <a href="#weakref">weakref</a>
 
@@ -250,7 +250,7 @@ imported by:
   <a target="code" href="" type="text/plain"><tt>'org.python'</tt></a>
 <span class="moduletype">MissingModule</span>  <div class="import">
 imported by:
-    <a href="#copy">copy</a>
+    <a href="#pickle">pickle</a>
 
   </div>
 
@@ -1175,8 +1175,8 @@ imports:
   <div class="import">
 imported by:
     <a href="#main.py">main.py</a>
- &#8226;   <a href="#resources.create_resources_tab">resources.create_resources_tab</a>
- &#8226;   <a href="#resources.create_products_tab">resources.create_products_tab</a>
+ &#8226;   <a href="#resources.catalog_tab">resources.catalog_tab</a>
+ &#8226;   <a href="#resources.resources_tab">resources.resources_tab</a>
 
   </div>
 
@@ -1206,8 +1206,7 @@ imports:
     <a href="#DAO.data">DAO.data</a>
  &#8226;   <a href="#actions">actions</a>
  &#8226;   <a href="#actions.getter">actions.getter</a>
- &#8226;   <a href="#json">json</a>
- &#8226;   <a href="#os">os</a>
+ &#8226;   <a href="#datetime">datetime</a>
  &#8226;   <a href="#resources.refresher">resources.refresher</a>
  &#8226;   <a href="#tkinter">tkinter</a>
  &#8226;   <a href="#tkinter.messagebox">tkinter.messagebox</a>
@@ -1229,6 +1228,7 @@ imported by:
 imports:
     <a href="#DAO.data">DAO.data</a>
  &#8226;   <a href="#actions">actions</a>
+ &#8226;   <a href="#datetime">datetime</a>
  &#8226;   <a href="#resources.refresher">resources.refresher</a>
 
   </div>
@@ -1713,8 +1713,8 @@ imported by:
   <a target="code" href="///C:/Program%20Files/WindowsApps/PythonSoftwareFoundation.Python.3.10_3.10.3056.0_x64__qbz5n2kfra8p0/lib/copy.py" type="text/plain"><tt>copy</tt></a>
 <span class="moduletype">SourceModule</span>  <div class="import">
 imports:
-    <a href="#'org.python'">'org.python'</a>
- &#8226;   <a href="#copyreg">copyreg</a>
+    <a href="#copyreg">copyreg</a>
+ &#8226;   <a href="#org">org</a>
  &#8226;   <a href="#types">types</a>
  &#8226;   <a href="#weakref">weakref</a>
 
@@ -1815,9 +1815,12 @@ imports:
   <div class="import">
 imported by:
     <a href="#_strptime">_strptime</a>
+ &#8226;   <a href="#actions.insert">actions.insert</a>
+ &#8226;   <a href="#actions.update">actions.update</a>
  &#8226;   <a href="#calendar">calendar</a>
  &#8226;   <a href="#email.utils">email.utils</a>
  &#8226;   <a href="#http.cookiejar">http.cookiejar</a>
+ &#8226;   <a href="#main.py">main.py</a>
 
   </div>
 
@@ -5759,7 +5762,6 @@ imports:
   <div class="import">
 imported by:
     <a href="#DAO.data">DAO.data</a>
- &#8226;   <a href="#actions.insert">actions.insert</a>
  &#8226;   <a href="#json.decoder">json.decoder</a>
  &#8226;   <a href="#json.encoder">json.encoder</a>
  &#8226;   <a href="#json.scanner">json.scanner</a>
@@ -6180,7 +6182,7 @@ imported by:
   <a target="code" href="" type="text/plain"><tt>org</tt></a>
 <span class="moduletype">MissingModule</span>  <div class="import">
 imported by:
-    <a href="#pickle">pickle</a>
+    <a href="#copy">copy</a>
 
   </div>
 
@@ -6208,7 +6210,6 @@ imports:
   <div class="import">
 imported by:
     <a href="#DAO.data">DAO.data</a>
- &#8226;   <a href="#actions.insert">actions.insert</a>
  &#8226;   <a href="#argparse">argparse</a>
  &#8226;   <a href="#bz2">bz2</a>
  &#8226;   <a href="#email.utils">email.utils</a>
@@ -6307,14 +6308,14 @@ imported by:
   <a target="code" href="///C:/Program%20Files/WindowsApps/PythonSoftwareFoundation.Python.3.10_3.10.3056.0_x64__qbz5n2kfra8p0/lib/pickle.py" type="text/plain"><tt>pickle</tt></a>
 <span class="moduletype">SourceModule</span>  <div class="import">
 imports:
-    <a href="#_compat_pickle">_compat_pickle</a>
+    <a href="#'org.python'">'org.python'</a>
+ &#8226;   <a href="#_compat_pickle">_compat_pickle</a>
  &#8226;   <a href="#_pickle">_pickle</a>
  &#8226;   <a href="#codecs">codecs</a>
  &#8226;   <a href="#copyreg">copyreg</a>
  &#8226;   <a href="#functools">functools</a>
  &#8226;   <a href="#io">io</a>
  &#8226;   <a href="#itertools">itertools</a>
- &#8226;   <a href="#org">org</a>
  &#8226;   <a href="#pprint">pprint</a>
  &#8226;   <a href="#re">re</a>
  &#8226;   <a href="#struct">struct</a>
@@ -6626,60 +6627,41 @@ imported by:
   <a target="code" href="-" type="text/plain"><tt>resources</tt></a>
 <span class="moduletype">NamespacePackage</span>  <div class="import">
 imported by:
-    <a href="#resources.config_menu">resources.config_menu</a>
- &#8226;   <a href="#resources.create_resources_tab">resources.create_resources_tab</a>
- &#8226;   <a href="#resources.create_products_tab">resources.create_products_tab</a>
+    <a href="#resources.catalog_tab">resources.catalog_tab</a>
+ &#8226;   <a href="#resources.main_menu">resources.main_menu</a>
  &#8226;   <a href="#resources.refresher">resources.refresher</a>
+ &#8226;   <a href="#resources.resources_tab">resources.resources_tab</a>
 
   </div>
 
 </div>
 
 <div class="node">
-  <a name="resources.config_menu"></a>
-  <a target="code" href="///C:/Users/vs_pf/Documents/devScripts/python/SaleMate/resources/config_menu.py" type="text/plain"><tt>resources.config_menu</tt></a>
+  <a name="resources.catalog_tab"></a>
+  <a target="code" href="///C:/Users/vs_pf/Documents/devScripts/python/SaleMate/resources/catalog_tab.py" type="text/plain"><tt>resources.catalog_tab</tt></a>
+<span class="moduletype">SourceModule</span>  <div class="import">
+imports:
+    <a href="#actions.filter">actions.filter</a>
+ &#8226;   <a href="#resources">resources</a>
+ &#8226;   <a href="#tkinter">tkinter</a>
+ &#8226;   <a href="#tkinter.ttk">tkinter.ttk</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#main.py">main.py</a>
+
+  </div>
+
+</div>
+
+<div class="node">
+  <a name="resources.main_menu"></a>
+  <a target="code" href="///C:/Users/vs_pf/Documents/devScripts/python/SaleMate/resources/main_menu.py" type="text/plain"><tt>resources.main_menu</tt></a>
 <span class="moduletype">SourceModule</span>  <div class="import">
 imports:
     <a href="#resources">resources</a>
  &#8226;   <a href="#tkinter">tkinter</a>
-
-  </div>
-  <div class="import">
-imported by:
-    <a href="#main.py">main.py</a>
-
-  </div>
-
-</div>
-
-<div class="node">
-  <a name="resources.create_resources_tab"></a>
-  <a target="code" href="///C:/Users/vs_pf/Documents/devScripts/python/SaleMate/resources/create_resources_tab.py" type="text/plain"><tt>resources.create_resources_tab</tt></a>
-<span class="moduletype">SourceModule</span>  <div class="import">
-imports:
-    <a href="#actions.filter">actions.filter</a>
- &#8226;   <a href="#resources">resources</a>
- &#8226;   <a href="#tkinter">tkinter</a>
- &#8226;   <a href="#tkinter.ttk">tkinter.ttk</a>
-
-  </div>
-  <div class="import">
-imported by:
-    <a href="#main.py">main.py</a>
-
-  </div>
-
-</div>
-
-<div class="node">
-  <a name="resources.create_products_tab"></a>
-  <a target="code" href="///C:/Users/vs_pf/Documents/devScripts/python/SaleMate/resources/create_products_tab.py" type="text/plain"><tt>resources.create_products_tab</tt></a>
-<span class="moduletype">SourceModule</span>  <div class="import">
-imports:
-    <a href="#actions.filter">actions.filter</a>
- &#8226;   <a href="#resources">resources</a>
- &#8226;   <a href="#tkinter">tkinter</a>
- &#8226;   <a href="#tkinter.ttk">tkinter.ttk</a>
 
   </div>
   <div class="import">
@@ -6705,6 +6687,25 @@ imported by:
  &#8226;   <a href="#actions.insert">actions.insert</a>
  &#8226;   <a href="#actions.update">actions.update</a>
  &#8226;   <a href="#main.py">main.py</a>
+
+  </div>
+
+</div>
+
+<div class="node">
+  <a name="resources.resources_tab"></a>
+  <a target="code" href="///C:/Users/vs_pf/Documents/devScripts/python/SaleMate/resources/resources_tab.py" type="text/plain"><tt>resources.resources_tab</tt></a>
+<span class="moduletype">SourceModule</span>  <div class="import">
+imports:
+    <a href="#actions.filter">actions.filter</a>
+ &#8226;   <a href="#resources">resources</a>
+ &#8226;   <a href="#tkinter">tkinter</a>
+ &#8226;   <a href="#tkinter.ttk">tkinter.ttk</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#main.py">main.py</a>
 
   </div>
 
@@ -7337,9 +7338,9 @@ imported by:
     <a href="#actions.delete">actions.delete</a>
  &#8226;   <a href="#actions.insert">actions.insert</a>
  &#8226;   <a href="#main.py">main.py</a>
- &#8226;   <a href="#resources.config_menu">resources.config_menu</a>
- &#8226;   <a href="#resources.create_resources_tab">resources.create_resources_tab</a>
- &#8226;   <a href="#resources.create_products_tab">resources.create_products_tab</a>
+ &#8226;   <a href="#resources.catalog_tab">resources.catalog_tab</a>
+ &#8226;   <a href="#resources.main_menu">resources.main_menu</a>
+ &#8226;   <a href="#resources.resources_tab">resources.resources_tab</a>
  &#8226;   <a href="#tkinter.commondialog">tkinter.commondialog</a>
  &#8226;   <a href="#tkinter.constants">tkinter.constants</a>
  &#8226;   <a href="#tkinter.messagebox">tkinter.messagebox</a>
@@ -7413,8 +7414,8 @@ imports:
   <div class="import">
 imported by:
     <a href="#main.py">main.py</a>
- &#8226;   <a href="#resources.create_resources_tab">resources.create_resources_tab</a>
- &#8226;   <a href="#resources.create_products_tab">resources.create_products_tab</a>
+ &#8226;   <a href="#resources.catalog_tab">resources.catalog_tab</a>
+ &#8226;   <a href="#resources.resources_tab">resources.resources_tab</a>
  &#8226;   <a href="#tkinter">tkinter</a>
 
   </div>
@@ -7778,7 +7779,6 @@ imports:
   <div class="import">
 imported by:
     <a href="#actions.insert">actions.insert</a>
- &#8226;   <a href="#main.py">main.py</a>
 
   </div>
 
