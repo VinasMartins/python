@@ -1,11 +1,9 @@
 from DAO.data import salvar_dados
 import uuid
-import json
+import datetime
 from tkinter import messagebox
 import tkinter as tk
 from resources.refresher import atualizar_lista
-import json
-import os
 from DAO.data import *
 from actions.getter import *
 
@@ -14,6 +12,7 @@ def cadastrar_resource(self):
     quantidade_str = self.entrada_resource_quantidade.get()
     preco_pago_str = self.entrada_resource_preco_pago.get().replace(",", ".")
     unidade_medida = self.combobox_unidade_medida.get()
+    actual_date = datetime.date.today().isoformat()
 
     if nome and quantidade_str.isdigit() and preco_pago_str.replace(".", "").isdigit() and unidade_medida:
         quantidade = int(quantidade_str)
@@ -24,7 +23,7 @@ def cadastrar_resource(self):
         resource_id = str(uuid.uuid4())
 
         self.resources.append(
-            {"ID": resource_id, "Name": nome, "Quantity": quantidade, "PaidAmount": preco_pago, "UnitPrice": preco_final, "UnitMeasure": unidade_medida}
+            {"ID": resource_id, "Name": nome, "Quantity": quantidade, "PaidAmount": preco_pago, "UnitPrice": preco_final, "UnitMeasure": unidade_medida, "CreatedAt": actual_date, "UpdatedAt": actual_date}
         )
 
         atualizar_lista(self, self.lista_resources, self.resources, 'resources')
@@ -35,9 +34,10 @@ def cadastrar_resource(self):
     else:
         self.popup_erro("Por favor, preencha os campos corretamente.")
 
-def cadastrar_valor_hora(self):
+def cadastrar_valor_hora(self, hour_config_value=None):
     carregar_dados(self)
     exist_resource = self.verify_if_has_hour_value()
+    actual_date = datetime.date.today().isoformat()
 
     if exist_resource == False:
         nome = "Valor Hora"
@@ -51,19 +51,31 @@ def cadastrar_valor_hora(self):
         resource_id = str(uuid.uuid4())
 
         self.resources.append(
-            {"ID": resource_id, "Name": nome, "Quantity": quantidade, "PaidAmount": preco_pago, "UnitPrice": preco_final, "UnitMeasure": unidade_medida}
+            {"ID": resource_id, "Name": nome, "Quantity": quantidade, "PaidAmount": preco_pago, "UnitPrice": preco_final, "UnitMeasure": unidade_medida, "CreatedAt": actual_date, "UpdatedAt": actual_date}
         )
 
         salvar_dados(self,"resources")
         atualizar_lista(self, self.lista_resources, self.resources, 'resources')
         messagebox.showinfo("Valor de Produção por Hora Cadastrado","Cadastramos um valor hora padrão nos seus recursos, você pode editar o valor desse recurso a qualquer momento.")
-
+    else:
+        for resource in self.resources:
+            if resource["Name"].lower() == "valor hora" and hour_config_value:
+                resource["PaidAmount"] = hour_config_value
+                resource["UnitPrice"] = hour_config_value / resource["Quantity"]
+                resource["CreatedAt"] = resource.get("CreatedAt", actual_date)
+                resource["CreatedAt"] = resource.get("CreatedAt", actual_date)
+                resource["UpdatedAt"] = actual_date
+                # Atualize a lista de resources
+                atualizar_lista(self, self.lista_resources, self.resources, 'resources')
+                salvar_dados(self, "resources")
 def cadastrar_produto(self):
     produto_nome = self.entrada_produto_nome.get()
     margem_lucro_atacado_str = self.entrada_margem_lucro_atacado.get().replace("%","").replace(" ","")
     margem_lucro_varejo_str = self.entrada_margem_lucro_varejo.get().replace("%","").replace(" ","")
     calcula_tempo_str = self.combobox_calcula_tempo.get()
     tipo_str = self.combobox_tipo.get()
+    
+    actual_date = datetime.date.today().isoformat()
 
     if produto_nome and self.selected_resources:
         margem_lucro_atacado = int(margem_lucro_atacado_str)
@@ -72,15 +84,15 @@ def cadastrar_produto(self):
         mao_de_obra_custo = 0.0
         valor_hora_exists = False
         for resource in self.selected_resources:
-            
             if resource["ResourceName"].lower() in ['m\u00e3o de obra', "mao de obra", "valor hora"] and self.product_type != 'Combo':
                 mao_de_obra_custo += resource["SpentAmount"]
                 valor_hora_exists = True
-            elif self.product_type == 'Combo':
-                mao_de_obra_custo += resource["HourValue"] * resource["UsedQuantity"]
+            elif self.product_type == 'Combo' or self.product_type == 'Servi\u00e7o':
+                mao_de_obra_custo += resource["HourValue"]# * resource["UsedQuantity"]
                 preco_custo += resource["SpentAmount"]
             else:
                 preco_custo += resource["SpentAmount"]
+            print(mao_de_obra_custo)
         preco_atacado = (preco_custo)*(1+(margem_lucro_atacado/100))+mao_de_obra_custo
         preco_varejo = (preco_custo)*(1+(margem_lucro_varejo/100))+mao_de_obra_custo
 
@@ -99,7 +111,9 @@ def cadastrar_produto(self):
                 "WholesaleSuggestedPrice": preco_atacado,
                 "RetailSuggestedPrice": preco_varejo,
                 "CalculateTimeSpent": calcula_tempo_str,
-                "Type": tipo_str
+                "Type": tipo_str,
+                "CreatedAt": actual_date,
+                "UpdatedAt": actual_date
             }
 
             if (valor_hora_exists or calcula_tempo_str == 'N\u00e3o') and len(self.selected_resources) >= 1:
@@ -126,8 +140,8 @@ def adicionar_resource(self):
                     valor_hora = 0
                     for resource in produto["Resources"]:
                         if resource["ResourceName"].lower() in ['m\u00e3o de obra', "mao de obra", "valor hora"]:
-                            valor_hora += resource["SpentAmount"]
-                    valor_gasto = (quantidade_utilizada * produto["CostPrice"])#+valor_hora
+                            valor_hora += resource["SpentAmount"] * quantidade_utilizada
+                    valor_gasto = (quantidade_utilizada * produto["CostPrice"])
                     self.selected_resources.append({
                         "ResourceId": produto["ID"],
                         "ResourceName": produto["Name"],
@@ -143,7 +157,7 @@ def adicionar_resource(self):
                 else:
                     self.popup_erro("A quantidade utilizada deve ser um valor numérico.")
                     return
-    else:
+    elif self.product_type == 'Produto':
         for resource in self.resources:
             if resource["Name"] == resource_selecionado:
                 if quantidade_utilizada_str.replace(".", "").isdigit():
@@ -164,8 +178,56 @@ def adicionar_resource(self):
                 else:
                     self.popup_erro("A quantidade utilizada deve ser um valor numérico.")
                     return
+    else:
+        # Verifique em ambos os tipos de recursos (produtos e recursos)
+        found = False
+        for resource in self.resources:
+            if resource["Name"] == resource_selecionado:
+                if quantidade_utilizada_str.replace(".", "").isdigit():
+                    quantidade_utilizada = float(quantidade_utilizada_str)
+                    valor_gasto = quantidade_utilizada * resource["UnitPrice"]
+                    self.selected_resources.append({
+                        "ResourceId": resource["ID"],
+                        "ResourceName": resource["Name"],
+                        "UnitMeasure": resource["UnitMeasure"],
+                        "UsedQuantity": quantidade_utilizada,
+                        "SpentAmount": valor_gasto,
+                        "HourValue": 0
+                    })
+                    self.atualizar_selected_resources_list()
+                    self.combobox_resources.set("")
+                    self.entrada_quantidade_utilizada.delete(0, tk.END)
+                    found = True
+                    break
 
-    self.popup_erro("Selecione um recurso/produto válido.")
+        if not found:
+            for produto in self.produtos:
+                if produto["Name"] == resource_selecionado:
+                    if quantidade_utilizada_str.replace(".", "").isdigit():
+                        quantidade_utilizada = float(quantidade_utilizada_str)
+                        valor_hora = 0
+                        for resource in produto["Resources"]:
+                            if resource["ResourceName"].lower() in ['m\u00e3o de obra', "mao de obra", "valor hora"]:
+                                valor_hora += resource["SpentAmount"] * quantidade_utilizada
+                            else:
+                                valor_hora += resource["HourValue"] * quantidade_utilizada
+                        valor_gasto = (quantidade_utilizada * produto["CostPrice"])
+                        self.selected_resources.append({
+                            "ResourceId": produto["ID"],
+                            "ResourceName": produto["Name"],
+                            "UnitMeasure": 'Unidades',
+                            "UsedQuantity": quantidade_utilizada,
+                            "SpentAmount": valor_gasto,
+                            "HourValue": valor_hora
+                        })
+                        self.atualizar_selected_resources_list()
+                        self.combobox_resources.set("")
+                        self.entrada_quantidade_utilizada.delete(0, tk.END)
+                        found = True
+                        break
+
+        if not found:
+            self.popup_erro("Selecione um recurso/produto válido.")
 
 def save_config_to_json(self):
     config_dict = {
@@ -186,9 +248,6 @@ def save_config_to_json(self):
         "remind_update": self.remind_update_var.get()
     }
 
-    __file_path = os.path.join(os.getcwd(), 'databases')
-    
-
     try:
         required_fields = ["name", "street", "number", "city", "state", "cep", "neighborhood", "country", "company", "company_code", "hours", "hourly_rate"]
         numeric_fields = ["hours", "hourly_rate"]
@@ -205,7 +264,7 @@ def save_config_to_json(self):
                 self.popup_erro(f"O campo '{field}' deve conter apenas números.")
                 return
 
-        config_data = {
+        self.system_config = {
             "Name": config_dict["name"],
             "Email": config_dict["email"],
             "Address": {
@@ -228,13 +287,11 @@ def save_config_to_json(self):
                 "RemindUpdate": config_dict["remind_update"]
             }
         }
-        
-        with open(f'{__file_path}/config.json', 'w') as config_file:
-            json.dump(config_data, config_file, indent=4)
-        
+
+        salvar_dados(self, "config")
       
         self.limpar_campos_config()
         self.show_default_screens()
-        cadastrar_valor_hora(self)
+        cadastrar_valor_hora(self, float(config_dict["hourly_rate"]))
     except Exception as e:
         self.popup_erro(f"Erro ao salvar dados. Erro: {e}")

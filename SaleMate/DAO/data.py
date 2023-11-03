@@ -30,6 +30,8 @@ def salvar_dados(self, type):
         dados = self.resources
     elif type == "products":
         dados = self.produtos
+    elif type == "config":
+        dados = self.system_config
 
     with open(f'{__file_path}/{type}.json', "w") as arquivo_json:
         json.dump(dados, arquivo_json, indent=4)
