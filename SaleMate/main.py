@@ -15,7 +15,7 @@ from actions.update import *
 class SaleMate:
     def __init__(self, janela):
         self.janela = janela
-        self.janela.title("SaleMate v0.0.02")
+        self.janela.title("SaleMate v0.0.03")
         # largura_tela = self.janela.winfo_screenwidth()
         # altura_tela = self.janela.winfo_screenheight()
         # self.janela.geometry(f"{largura_tela-500}x{altura_tela-500}")
