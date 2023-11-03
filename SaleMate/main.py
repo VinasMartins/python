@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
 import locale
+import datetime
 from resources.catalog_tab import create_catalog_tab
 from resources.resources_tab import create_resources_tab
 from resources.main_menu import create_main_menu
@@ -43,6 +44,8 @@ class SaleMate:
         # Botão Verde
         self.estilo.configure('Green.TButton', background='#00FF00')
         self.estilo.map('Green.TButton', background=[('active', '#33FF33')])
+
+        self.actual_date = datetime.date.today()
 
         self.resources = []
         self.produtos = []
@@ -113,6 +116,7 @@ class SaleMate:
     
     def mostrar_campos_resource(self, resource=None):
         self.limpar_campos_resources()
+        print(resource)
 
         # Cria uma janela popup para a edição de resources
         self.janela_popup_resource = tk.Toplevel(self.aba_resources)
