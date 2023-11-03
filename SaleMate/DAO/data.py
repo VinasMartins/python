@@ -6,14 +6,12 @@ __file_path = os.path.join(os.getcwd(), 'databases')
 if not os.path.exists('databases'):
     os.makedirs('databases')
 
-# __file_path = 'databases/'
-
 def carregar_dados(self):
     try:
-        with open(f"{__file_path}/materials.json", "r") as arquivo_json:
-            self.materiais = json.load(arquivo_json)
+        with open(f"{__file_path}/resources.json", "r") as arquivo_json:
+            self.resources = json.load(arquivo_json)
     except FileNotFoundError:
-        self.materiais = []
+        self.resources = []
 
     try:
         with open(f"{__file_path}/products.json", "r") as arquivo_json:
@@ -28,8 +26,8 @@ def carregar_dados(self):
         self.system_config = []
 
 def salvar_dados(self, type):
-    if type == "materials":
-        dados = self.materiais
+    if type == "resources":
+        dados = self.resources
     elif type == "products":
         dados = self.produtos
 

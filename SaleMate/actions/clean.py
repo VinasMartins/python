@@ -1,11 +1,11 @@
-def limpar_campos_materiais(self):
+def limpar_campos_resources(self):
     try:
-        self.janela_popup_material.destroy()
+        self.janela_popup_resource.destroy()
     except AttributeError:
         pass
 
 def limpar_campos_produtos(self):
-    self.materiais_selecionados = []
+    self.selected_resources = []
     try:
         self.janela_popup_produto.destroy()
     except AttributeError:

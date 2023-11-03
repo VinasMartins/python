@@ -1,7 +1,7 @@
-def encontrar_material_por_id(self, material_id):
-    for material in self.materiais:
-        if material.get("ID") == material_id:
-            return material
+def encontrar_resource_por_id(self, resource_id):
+    for resource in self.resources:
+        if resource.get("ID") == resource_id:
+            return resource
     return None
 
 # Função para encontrar um produto pelo ID
@@ -12,14 +12,14 @@ def encontrar_produto_por_id(self, produto_id):
     return None
 
 def filter_list(self, filter_by, entity):
-    if entity == 'materials':
-        for item in self.lista_materiais.get_children():
-            valores = self.lista_materiais.item(item, 'values')
+    if entity == 'resources':
+        for item in self.lista_resources.get_children():
+            valores = self.lista_resources.item(item, 'values')
             nome = valores[1]
             if filter_by.lower() in nome.lower():
-                self.lista_materiais.selection_set(item)
+                self.lista_resources.selection_set(item)
             else:
-                self.lista_materiais.selection_remove(item)
+                self.lista_resources.selection_remove(item)
     
     if entity == 'products':
         for item in self.lista_produtos.get_children():
@@ -30,11 +30,11 @@ def filter_list(self, filter_by, entity):
             else:
                 self.lista_produtos.selection_remove(item)
 
-def atualizar_combobox_materiais(self, *args, is_filter=False):
+def update_combobox_resources(self, *args, is_filter=False):
     tipo_produto = self.combobox_tipo.get()
     self.product_type = tipo_produto
     
-    texto_pesquisa = self.var_filtro_materiais.get()
+    texto_pesquisa = self.var_filtro_resources.get()
 
     self.combobox_calcula_tempo.config(state='enable')
     self.combobox_calcula_tempo.set("Sim")
@@ -42,21 +42,21 @@ def atualizar_combobox_materiais(self, *args, is_filter=False):
 
     if tipo_produto == "Combo":
         self.combobox_calcula_tempo.set("N\u00e3o")
-        products = [produto['Nome'] for produto in sorted(self.produtos, key=lambda x: x["Nome"]) if produto["Tipo"] != 'Combo']
+        products = [produto['Name'] for produto in sorted(self.produtos, key=lambda x: x["Name"]) if produto["Type"] != 'Combo']
         _update_combobox(self, is_filter, texto_pesquisa, products)
     elif tipo_produto == 'Serviço':
         self.combobox_calcula_tempo.set("N\u00e3o")
-        combined_list = [f"{produto['Nome']}" for produto in sorted(self.produtos, key=lambda x: x["Nome"])]
-        combined_list.extend([f"{material['Nome']} [{material['Unidade de Medida']}]" for material in sorted(self.materiais, key=lambda x: x["Nome"])])
+        combined_list = [f"{produto['Name']}" for produto in sorted(self.produtos, key=lambda x: x["Name"])]
+        combined_list.extend([f"{resource['Name']} [{resource['UnitMeasure']}]" for resource in sorted(self.resources, key=lambda x: x["Name"])])
         _update_combobox(self, is_filter, texto_pesquisa, combined_list)
     else:
         self.combobox_tipo.set("Produto")
-        materials = [f"{material['Nome']} [{material['Unidade de Medida']}]" for material in sorted(self.materiais, key=lambda x: x["Nome"])]
-        _update_combobox(self, is_filter, texto_pesquisa, materials)
+        resources = [f"{resource['Name']} [{resource['UnitMeasure']}]" for resource in sorted(self.resources, key=lambda x: x["Name"])]
+        _update_combobox(self, is_filter, texto_pesquisa, resources)
 
 def _update_combobox(self, is_filter, texto_pesquisa, items):
     if is_filter:
-        self.combobox_materiais['values'] = [item for item in items if texto_pesquisa.lower() in item.lower()]
+        self.combobox_resources['values'] = [item for item in items if texto_pesquisa.lower() in item.lower()]
     else:
-        self.combobox_materiais['values'] = items
+        self.combobox_resources['values'] = items
         

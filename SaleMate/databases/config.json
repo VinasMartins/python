@@ -1,19 +1,23 @@
 {
-    "Name": "Vinicius Pereira Martins",
+    "Name": "Joseph Teste Da Silva",
     "Email": "1",
     "Address": {
-        "Street": "Rua Quipap\u00e1",
-        "Number": "71",
+        "Street": "Rua Teste",
+        "Number": "91",
         "City": "Sao Paulo",
         "State": "SP",
-        "CEP": "08080470",
-        "Neighborhood": "Parque Paulistano",
+        "CEP": "08070870",
+        "Neighborhood": "Parque Teste",
         "Country": "Brasil"
     },
     "WorkInfo": {
-        "Company": "VPM Systems Inc.",
+        "Company": "Test Systems Inc.",
         "CompanyCode": "12.345.678/0001-23",
         "HoursPerDay": 8.0,
         "HourlyRate": 60.0
+    },
+    "SystemConfig": {
+        "LimitTimeInDays": 90,
+        "RemindUpdate": true
     }
 }

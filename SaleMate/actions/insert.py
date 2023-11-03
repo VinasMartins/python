@@ -9,10 +9,10 @@ import os
 from DAO.data import *
 from actions.getter import *
 
-def cadastrar_material(self):
-    nome = self.entrada_material_nome.get()
-    quantidade_str = self.entrada_material_quantidade.get()
-    preco_pago_str = self.entrada_material_preco_pago.get().replace(",", ".")
+def cadastrar_resource(self):
+    nome = self.entrada_resource_nome.get()
+    quantidade_str = self.entrada_resource_quantidade.get()
+    preco_pago_str = self.entrada_resource_preco_pago.get().replace(",", ".")
     unidade_medida = self.combobox_unidade_medida.get()
 
     if nome and quantidade_str.isdigit() and preco_pago_str.replace(".", "").isdigit() and unidade_medida:
@@ -20,26 +20,26 @@ def cadastrar_material(self):
         preco_pago = float(preco_pago_str)
         preco_final = preco_pago / quantidade
 
-        # Gera um UUID exclusivo para o material
-        material_id = str(uuid.uuid4())
+        # Gera um UUID exclusivo para o resource
+        resource_id = str(uuid.uuid4())
 
-        self.materiais.append(
-            {"ID": material_id, "Nome": nome, "Quantidade": quantidade, "Valor Pago": preco_pago, "Preco Unit": preco_final, "Unidade de Medida": unidade_medida}
+        self.resources.append(
+            {"ID": resource_id, "Name": nome, "Quantity": quantidade, "PaidAmount": preco_pago, "UnitPrice": preco_final, "UnitMeasure": unidade_medida}
         )
 
-        atualizar_lista(self, self.lista_materiais, self.materiais, 'materiais')
+        atualizar_lista(self, self.lista_resources, self.resources, 'resources')
 
-        self.limpar_campos_materiais()
+        self.limpar_campos_resources()
 
-        salvar_dados(self,"materials")
+        salvar_dados(self,"resources")
     else:
         self.popup_erro("Por favor, preencha os campos corretamente.")
 
 def cadastrar_valor_hora(self):
     carregar_dados(self)
-    exist_material = self.verify_if_has_hour_value()
+    exist_resource = self.verify_if_has_hour_value()
 
-    if exist_material == False:
+    if exist_resource == False:
         nome = "Valor Hora"
         quantidade_str = 60
         preco_pago_str = deep_get(self.system_config, "WorkInfo.HourlyRate", 25) #self.system_config["WorkInfo"]["HourlyRate"] if self.system_config else 25
@@ -48,14 +48,14 @@ def cadastrar_valor_hora(self):
         quantidade = int(quantidade_str)
         preco_pago = float(preco_pago_str)
         preco_final = preco_pago / quantidade
-        material_id = str(uuid.uuid4())
+        resource_id = str(uuid.uuid4())
 
-        self.materiais.append(
-            {"ID": material_id, "Nome": nome, "Quantidade": quantidade, "Valor Pago": preco_pago, "Preco Unit": preco_final, "Unidade de Medida": unidade_medida}
+        self.resources.append(
+            {"ID": resource_id, "Name": nome, "Quantity": quantidade, "PaidAmount": preco_pago, "UnitPrice": preco_final, "UnitMeasure": unidade_medida}
         )
 
-        salvar_dados(self,"materials")
-        atualizar_lista(self, self.lista_materiais, self.materiais, 'materiais')
+        salvar_dados(self,"resources")
+        atualizar_lista(self, self.lista_resources, self.resources, 'resources')
         messagebox.showinfo("Valor de Produção por Hora Cadastrado","Cadastramos um valor hora padrão nos seus recursos, você pode editar o valor desse recurso a qualquer momento.")
 
 def cadastrar_produto(self):
@@ -65,22 +65,22 @@ def cadastrar_produto(self):
     calcula_tempo_str = self.combobox_calcula_tempo.get()
     tipo_str = self.combobox_tipo.get()
 
-    if produto_nome and self.materiais_selecionados:
+    if produto_nome and self.selected_resources:
         margem_lucro_atacado = int(margem_lucro_atacado_str)
         margem_lucro_varejo = int(margem_lucro_varejo_str)
         preco_custo = 0.0
         mao_de_obra_custo = 0.0
         valor_hora_exists = False
-        for material in self.materiais_selecionados:
+        for resource in self.selected_resources:
             
-            if material["Material"].lower() in ['m\u00e3o de obra', "mao de obra", "valor hora"] and self.product_type != 'Combo':
-                mao_de_obra_custo += material["Valor Gasto"]
+            if resource["ResourceName"].lower() in ['m\u00e3o de obra', "mao de obra", "valor hora"] and self.product_type != 'Combo':
+                mao_de_obra_custo += resource["SpentAmount"]
                 valor_hora_exists = True
             elif self.product_type == 'Combo':
-                mao_de_obra_custo += material["Valor Hora"] * material["Quantidade Utilizada"]
-                preco_custo += material["Valor Gasto"]
+                mao_de_obra_custo += resource["HourValue"] * resource["UsedQuantity"]
+                preco_custo += resource["SpentAmount"]
             else:
-                preco_custo += material["Valor Gasto"]
+                preco_custo += resource["SpentAmount"]
         preco_atacado = (preco_custo)*(1+(margem_lucro_atacado/100))+mao_de_obra_custo
         preco_varejo = (preco_custo)*(1+(margem_lucro_varejo/100))+mao_de_obra_custo
 
@@ -91,23 +91,23 @@ def cadastrar_produto(self):
 
             produto = {
                 "ID": produto_id,
-                "Nome": produto_nome,
-                "Materiais": self.materiais_selecionados,
-                "Preco de Custo": preco_custo,
-                "Margem de Lucro Atacado": margem_lucro_atacado,
-                "Margem de Lucro Varejo": margem_lucro_varejo,
-                "Preco Sugerido Atacado": preco_atacado,
-                "Preco Sugerido Varejo": preco_varejo,
-                "Calcula Tempo Gasto": calcula_tempo_str,
-                "Tipo": tipo_str
+                "Name": produto_nome,
+                "Resources": self.selected_resources,
+                "CostPrice": preco_custo,
+                "WholesaleProfitMargin": margem_lucro_atacado,
+                "RetailProfitMargin": margem_lucro_varejo,
+                "WholesaleSuggestedPrice": preco_atacado,
+                "RetailSuggestedPrice": preco_varejo,
+                "CalculateTimeSpent": calcula_tempo_str,
+                "Type": tipo_str
             }
 
-            if (valor_hora_exists or calcula_tempo_str == 'N\u00e3o') and len(self.materiais_selecionados) >= 1:
+            if (valor_hora_exists or calcula_tempo_str == 'N\u00e3o') and len(self.selected_resources) >= 1:
                 self.produtos.append(produto)
                 atualizar_lista(self, self.lista_produtos, self.produtos, 'produtos')
                 self.entrada_produto_nome.delete(0, tk.END)
-                self.materiais_selecionados = []
-                self.atualizar_lista_materiais_selecionados()
+                self.selected_resources = []
+                self.atualizar_selected_resources_list()
                 self.limpar_campos_produtos()
                 salvar_dados(self, "products")
             else:
@@ -115,49 +115,50 @@ def cadastrar_produto(self):
     else:
         self.popup_erro("Por favor, preencha os campos corretamente.")
 
-def adicionar_material(self):
+def adicionar_resource(self):
     quantidade_utilizada_str = self.entrada_quantidade_utilizada.get()
-    material_selecionado = self.combobox_materiais.get().split(" [")[0]
+    resource_selecionado = self.combobox_resources.get().split(" [")[0]
     if self.product_type == 'Combo':
         for produto in self.produtos:
-            if produto["Nome"] == material_selecionado:
+            if produto["Name"] == resource_selecionado:
                 if quantidade_utilizada_str.replace(".", "").isdigit():
                     quantidade_utilizada = float(quantidade_utilizada_str)
                     valor_hora = 0
-                    for material in produto["Materiais"]:
-                        if material["Material"].lower() in ['m\u00e3o de obra', "mao de obra", "valor hora"]:
-                            valor_hora += material["Valor Gasto"]
-                    valor_gasto = (quantidade_utilizada * produto["Preco de Custo"])#+valor_hora
-                    self.materiais_selecionados.append({
-                        "Material ID": produto["ID"],
-                        "Material": produto["Nome"],
-                        "Unidade de Medida": 'Unidades',
-                        "Quantidade Utilizada": quantidade_utilizada,
-                        "Valor Gasto": valor_gasto,
-                        "Valor Hora": valor_hora
+                    for resource in produto["Resources"]:
+                        if resource["ResourceName"].lower() in ['m\u00e3o de obra', "mao de obra", "valor hora"]:
+                            valor_hora += resource["SpentAmount"]
+                    valor_gasto = (quantidade_utilizada * produto["CostPrice"])#+valor_hora
+                    self.selected_resources.append({
+                        "ResourceId": produto["ID"],
+                        "ResourceName": produto["Name"],
+                        "UnitMeasure": 'Unidades',
+                        "UsedQuantity": quantidade_utilizada,
+                        "SpentAmount": valor_gasto,
+                        "HourValue": valor_hora
                     })
-                    self.atualizar_lista_materiais_selecionados()
-                    self.combobox_materiais.set("")
+                    self.atualizar_selected_resources_list()
+                    self.combobox_resources.set("")
                     self.entrada_quantidade_utilizada.delete(0, tk.END)
                     return
                 else:
                     self.popup_erro("A quantidade utilizada deve ser um valor numérico.")
                     return
     else:
-        for material in self.materiais:
-            if material["Nome"] == material_selecionado:
+        for resource in self.resources:
+            if resource["Name"] == resource_selecionado:
                 if quantidade_utilizada_str.replace(".", "").isdigit():
                     quantidade_utilizada = float(quantidade_utilizada_str)
-                    valor_gasto = quantidade_utilizada * material["Preco Unit"]
-                    self.materiais_selecionados.append({
-                        "Material ID": material["ID"],
-                        "Material": material["Nome"],
-                        "Unidade de Medida": material["Unidade de Medida"],
-                        "Quantidade Utilizada": quantidade_utilizada,
-                        "Valor Gasto": valor_gasto
+                    valor_gasto = quantidade_utilizada * resource["UnitPrice"]
+                    self.selected_resources.append({
+                        "ResourceId": resource["ID"],
+                        "ResourceName": resource["Name"],
+                        "UnitMeasure": resource["UnitMeasure"],
+                        "UsedQuantity": quantidade_utilizada,
+                        "SpentAmount": valor_gasto,
+                        "HourValue": 0
                     })
-                    self.atualizar_lista_materiais_selecionados()
-                    self.combobox_materiais.set("")
+                    self.atualizar_selected_resources_list()
+                    self.combobox_resources.set("")
                     self.entrada_quantidade_utilizada.delete(0, tk.END)
                     return
                 else:
@@ -180,7 +181,9 @@ def save_config_to_json(self):
         "company":self.entry_company_name.get(),
         "company_code":self.entry_company_code_cnpj_cpf.get(),
         "hours": self.entry_hours.get(),
-        "hourly_rate": self.entry_hourly_rate.get().replace(",", ".")
+        "hourly_rate": self.entry_hourly_rate.get().replace(",", "."),
+        "limit_time_in_days": self.entry_limit_time_in_days.get().replace(",", "."),
+        "remind_update": self.remind_update_var.get()
     }
 
     __file_path = os.path.join(os.getcwd(), 'databases')
@@ -188,11 +191,11 @@ def save_config_to_json(self):
 
     try:
         required_fields = ["name", "street", "number", "city", "state", "cep", "neighborhood", "country", "company", "company_code", "hours", "hourly_rate"]
-        numeric_fields = ["cep", "hours", "hourly_rate"]
+        numeric_fields = ["hours", "hourly_rate"]
         # Validando campos obrigatórios
         for field in required_fields:
             if not config_dict.get(field):
-                self.popup_erro(f"O campo '{field}' é obrigatório e não pode estar vazio.")
+                self.popup_erro(f"O campo '{field}' é obrigatório e precisa estar preenchido corretamente.")
                 return
 
         # Validando campos numéricos
@@ -219,6 +222,10 @@ def save_config_to_json(self):
                 "CompanyCode": config_dict["company_code"],
                 "HoursPerDay": float(config_dict["hours"]),
                 "HourlyRate": float(config_dict["hourly_rate"])
+            },
+            "SystemConfig": {
+                "LimitTimeInDays": int(config_dict["limit_time_in_days"]) if config_dict["limit_time_in_days"] else 90,
+                "RemindUpdate": config_dict["remind_update"]
             }
         }
         
