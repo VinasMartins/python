@@ -462,8 +462,8 @@
   ('resources.create_products_tab',
    'C:\\Users\\vs_pf\\Documents\\devScripts\\python\\SaleMate\\resources\\create_products_tab.py',
    'PYMODULE'),
-  ('resources.create_materials_tab',
-   'C:\\Users\\vs_pf\\Documents\\devScripts\\python\\SaleMate\\resources\\create_materials_tab.py',
+  ('resources.create_resources_tab',
+   'C:\\Users\\vs_pf\\Documents\\devScripts\\python\\SaleMate\\resources\\create_resources_tab.py',
    'PYMODULE'),
   ('uuid',
    'C:\\Program '

@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 from actions.filter import filter_list
 
-def criar_aba_produtos(self):
+def create_catalog_tab(self):
     frame_produtos = ttk.Frame(self.aba_produtos, style="Custom.TFrame")
     frame_produtos.pack(padx=10, pady=10, fill='both', expand=True)
 
@@ -21,7 +21,7 @@ def criar_aba_produtos(self):
     filtro_button.grid(row=1, column=0, padx=530, pady=5, sticky=tk.W)
 
     # Treeview
-    self.lista_produtos = ttk.Treeview(frame_produtos, columns=("ID", "Nome", "Tipo", "Materiais", "Preço de Custo", "Margem de Lucro Atacado", "Margem de Lucro Varejo", "Preço Sugerido Atacado", "Preço Sugerido Varejo"))
+    self.lista_produtos = ttk.Treeview(frame_produtos, columns=("ID", "Name", "Type", "Resources", "CostPrice", "WholesaleProfitMargin", "RetailProfitMargin", "WholesaleSuggestedPrice", "RetailSuggestedPrice"))
     self.lista_produtos.heading("#1", text="ID", anchor=tk.W)
     self.lista_produtos.heading("#2", text="Nome")
     self.lista_produtos.heading("#3", text="Tipo")

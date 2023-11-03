@@ -1,16 +1,15 @@
 import tkinter as tk
-from tkinter import ttk, IntVar, messagebox
+from tkinter import ttk, messagebox
 import locale
-import uuid
-from resources.create_materials_tab import criar_aba_materiais
-from resources.create_products_tab import criar_aba_produtos
+from resources.catalog_tab import create_catalog_tab
+from resources.resources_tab import create_resources_tab
+from resources.main_menu import create_main_menu
+from resources.refresher import *
 from DAO.data import *
 from actions.delete import *
-from actions.update import *
-from actions.insert import *
 from actions.filter import *
-from resources.refresher import *
-from resources.config_menu import create_main_menu
+from actions.insert import *
+from actions.update import *
 
 class SaleMate:
     def __init__(self, janela):
@@ -45,12 +44,13 @@ class SaleMate:
         self.estilo.configure('Green.TButton', background='#00FF00')
         self.estilo.map('Green.TButton', background=[('active', '#33FF33')])
 
-        self.materiais = []
+        self.resources = []
         self.produtos = []
-        self.materiais_selecionados = []
-        self.lista_materiais_selecionados = None
+        self.selected_resources = []
+        self.selected_resources_list = None
         self.system_config = None
         self.has_default_screen = False
+        self.remind_update_var = tk.BooleanVar()
         
         self.product_type = 'Produto'
 
@@ -80,10 +80,10 @@ class SaleMate:
 
 
     def verify_if_has_hour_value(self):
-        # Verifique se já existe um material com o nome "Valor Hora"
+        # Verifique se já existe um resource com o nome "Valor Hora"
         value = False
-        for material in self.materiais:
-            if material["Nome"].lower() == "valor hora":
+        for resource in self.resources:
+            if resource["Name"].lower() == "valor hora":
                 value = True
         return value
 
@@ -92,79 +92,79 @@ class SaleMate:
 
         if not self.has_default_screen:
             self.abas = ttk.Notebook(self.janela)
-            self.aba_materiais = ttk.Frame(self.abas)
+            self.aba_resources = ttk.Frame(self.abas)
             self.aba_produtos = ttk.Frame(self.abas)
 
             create_main_menu(self)
-            self.abas.add(self.aba_materiais, text="Recursos")
+            self.abas.add(self.aba_resources, text="Recursos")
             self.abas.add(self.aba_produtos, text="Catálogo")
 
             self.abas.pack(fill='both', expand=True)
 
             locale.setlocale(locale.LC_ALL, 'pt_BR.UTF-8')
 
-            criar_aba_materiais(self)
-            criar_aba_produtos(self)
+            create_resources_tab(self)
+            create_catalog_tab(self)
 
-            atualizar_lista(self, self.lista_materiais, self.materiais, 'materiais')
+            atualizar_lista(self, self.lista_resources, self.resources, 'resources')
             atualizar_lista(self, self.lista_produtos, self.produtos, 'produtos')
 
             self.has_default_screen = True
     
-    def mostrar_campos_material(self, material=None):
-        self.limpar_campos_materiais()
+    def mostrar_campos_resource(self, resource=None):
+        self.limpar_campos_resources()
 
-        # Cria uma janela popup para a edição de materiais
-        self.janela_popup_material = tk.Toplevel(self.aba_materiais)
-        self.janela_popup_material.title("Cadastro de Recurso")
-        self.janela_popup_material.iconbitmap('images/logo2.ico')
+        # Cria uma janela popup para a edição de resources
+        self.janela_popup_resource = tk.Toplevel(self.aba_resources)
+        self.janela_popup_resource.title("Cadastro de Recurso")
+        self.janela_popup_resource.iconbitmap('images/logo2.ico')
 
-        self.define_screen_size(self.janela_popup_material, 580,180)
+        self.define_screen_size(self.janela_popup_resource, 580,180)
 
-        frame_popup_material = ttk.Frame(self.janela_popup_material)
-        frame_popup_material.pack(padx=10, pady=10, fill='both', expand=True)
+        frame_popup_resource = ttk.Frame(self.janela_popup_resource)
+        frame_popup_resource.pack(padx=10, pady=10, fill='both', expand=True)
 
-        self.label_material_nome = ttk.Label(frame_popup_material, text="Nome:")
-        self.entrada_material_nome = ttk.Entry(frame_popup_material, width=70)
+        self.label_resource_nome = ttk.Label(frame_popup_resource, text="Nome:")
+        self.entrada_resource_nome = ttk.Entry(frame_popup_resource, width=70)
 
-        self.label_material_quantidade = ttk.Label(frame_popup_material, text="Quantidade:")
-        self.entrada_material_quantidade = ttk.Entry(frame_popup_material, width=70)
+        self.label_resource_quantidade = ttk.Label(frame_popup_resource, text="Quantidade:")
+        self.entrada_resource_quantidade = ttk.Entry(frame_popup_resource, width=70)
 
-        self.label_material_preco_pago = ttk.Label(frame_popup_material, text="Valor (R$):")
-        self.entrada_material_preco_pago = ttk.Entry(frame_popup_material, width=70)
+        self.label_resource_preco_pago = ttk.Label(frame_popup_resource, text="Valor (R$):")
+        self.entrada_resource_preco_pago = ttk.Entry(frame_popup_resource, width=70)
 
-        self.label_material_unidade_medida = ttk.Label(frame_popup_material, text="Unidade de Medida:")
-        self.combobox_unidade_medida = ttk.Combobox(frame_popup_material, values=self.unidades_medida, width=67)
-        self.botao_cancelar_material = ttk.Button(frame_popup_material, text="Cancelar", command=self.limpar_campos_materiais, style='Red.TButton')
+        self.label_resource_unidade_medida = ttk.Label(frame_popup_resource, text="Unidade de Medida:")
+        self.combobox_unidade_medida = ttk.Combobox(frame_popup_resource, values=self.unidades_medida, width=67)
+        self.botao_cancelar_resource = ttk.Button(frame_popup_resource, text="Cancelar", command=self.limpar_campos_resources, style='Red.TButton')
 
-        if material:
-            self.entrada_material_nome.insert(0, material["Nome"])  # Preencha com o nome atual do material
-            self.entrada_material_quantidade.insert(0, str(material["Quantidade"]))  # Preencha com a quantidade atual do material
-            self.entrada_material_preco_pago.insert(0, str(material["Valor Pago"]))  # Preencha com o valor pago atual do material
-            self.combobox_unidade_medida.set(material["Unidade de Medida"])  # Selecione a unidade de medida atual do material
-            self.entrada_material_nome.config(state='disabled')
+        if resource:
+            self.entrada_resource_nome.insert(0, resource["Name"])  # Preencha com o nome atual do resource
+            self.entrada_resource_quantidade.insert(0, str(resource["Quantity"]))  # Preencha com a quantidade atual do resource
+            self.entrada_resource_preco_pago.insert(0, str(resource["PaidAmount"]))  # Preencha com o valor pago atual do resource
+            self.combobox_unidade_medida.set(resource["UnitMeasure"])  # Selecione a unidade de medida atual do resource
+            self.entrada_resource_nome.config(state='disabled')
             self.combobox_unidade_medida.config(state='disabled')
-            self.botao_atualizar_material = ttk.Button(frame_popup_material, text="Salvar Edição", command=lambda: atualizar_material(self, material), style='Blue.TButton')
-            self.botao_excluir_material = ttk.Button(frame_popup_material, text="Excluir", command=lambda: excluir_material(self, material), style='Orange.TButton')
-            # Verifica se o nome do material é "Valor Hora" para desabilitar todos os campos
-            if material["Nome"].lower() == "valor hora":
-                self.entrada_material_quantidade.config(state='disabled')
-                self.entrada_material_preco_pago.config(state='enabled')
+            self.botao_atualizar_resource = ttk.Button(frame_popup_resource, text="Salvar Edição", command=lambda: atualizar_resource(self, resource), style='Blue.TButton')
+            self.botao_excluir_resource = ttk.Button(frame_popup_resource, text="Excluir", command=lambda: excluir_resource(self, resource), style='Orange.TButton')
+            # Verifica se o nome do resource é "Valor Hora" para desabilitar todos os campos
+            if resource["Name"].lower() == "valor hora":
+                self.entrada_resource_quantidade.config(state='disabled')
+                self.entrada_resource_preco_pago.config(state='enabled')
             else:
-                self.botao_excluir_material.grid(row=4, column=1, padx=100, pady=5, columnspan=2, sticky=tk.E)
+                self.botao_excluir_resource.grid(row=4, column=1, padx=100, pady=5, columnspan=2, sticky=tk.E)
         else:
-            self.botao_atualizar_material = ttk.Button(frame_popup_material, text="Salvar", command=lambda: cadastrar_material(self), style='Green.TButton')
+            self.botao_atualizar_resource = ttk.Button(frame_popup_resource, text="Salvar", command=lambda: cadastrar_resource(self), style='Green.TButton')
 
-        self.label_material_nome.grid(row=0, column=0, padx=5, pady=5, sticky=tk.W)
-        self.entrada_material_nome.grid(row=0, column=1, padx=5, pady=5)
-        self.label_material_unidade_medida.grid(row=1, column=0, padx=5, pady=5, sticky=tk.W)
+        self.label_resource_nome.grid(row=0, column=0, padx=5, pady=5, sticky=tk.W)
+        self.entrada_resource_nome.grid(row=0, column=1, padx=5, pady=5)
+        self.label_resource_unidade_medida.grid(row=1, column=0, padx=5, pady=5, sticky=tk.W)
         self.combobox_unidade_medida.grid(row=1, column=1, padx=5, pady=5)
-        self.label_material_quantidade.grid(row=2, column=0, padx=5, pady=5, sticky=tk.W)
-        self.entrada_material_quantidade.grid(row=2, column=1, padx=5, pady=5)
-        self.label_material_preco_pago.grid(row=3, column=0, padx=5, pady=5, sticky=tk.W)
-        self.entrada_material_preco_pago.grid(row=3, column=1, padx=5, pady=5)
-        self.botao_atualizar_material.grid(row=4, column=0, padx=5, pady=5, columnspan=2, sticky=tk.W)
-        self.botao_cancelar_material.grid(row=4, column=1, padx=5, pady=5, columnspan=2, sticky=tk.E)
+        self.label_resource_quantidade.grid(row=2, column=0, padx=5, pady=5, sticky=tk.W)
+        self.entrada_resource_quantidade.grid(row=2, column=1, padx=5, pady=5)
+        self.label_resource_preco_pago.grid(row=3, column=0, padx=5, pady=5, sticky=tk.W)
+        self.entrada_resource_preco_pago.grid(row=3, column=1, padx=5, pady=5)
+        self.botao_atualizar_resource.grid(row=4, column=0, padx=5, pady=5, columnspan=2, sticky=tk.W)
+        self.botao_cancelar_resource.grid(row=4, column=1, padx=5, pady=5, columnspan=2, sticky=tk.E)
     
     def mostrar_campos_produto(self, produto=None):
         
@@ -191,41 +191,41 @@ class SaleMate:
 
         self.label_tipo = ttk.Label(frame_popup_produto, text="Tipo:")
         self.combobox_tipo = ttk.Combobox(frame_popup_produto, values=self.product_types, width=67)
-        self.combobox_tipo.bind("<<ComboboxSelected>>", lambda event: atualizar_combobox_materiais(self))
+        self.combobox_tipo.bind("<<ComboboxSelected>>", lambda event: update_combobox_resources(self))
         
         self.label_calcula_tempo = ttk.Label(frame_popup_produto, text="Calcular Valor Hora?")
         self.combobox_calcula_tempo = ttk.Combobox(frame_popup_produto, values=self.boolean_values, width=67)
 
-        self.label_produto_materiais = ttk.Label(frame_popup_produto, text="Recursos Utilizados (selecione):")
-        self.var_filtro_materiais = tk.StringVar() 
-        self.combobox_materiais = ttk.Combobox(frame_popup_produto, textvariable=self.var_filtro_materiais, width=67)
+        self.label_product_resources = ttk.Label(frame_popup_produto, text="Recursos Utilizados (selecione):")
+        self.var_filtro_resources = tk.StringVar() 
+        self.combobox_resources = ttk.Combobox(frame_popup_produto, textvariable=self.var_filtro_resources, width=67)
         self.label_quantidade_utilizada = ttk.Label(frame_popup_produto, text="Quantidade Utilizada:")
         self.entrada_quantidade_utilizada = ttk.Entry(frame_popup_produto, width=50)
-        self.botao_adicionar_material = ttk.Button(frame_popup_produto, text="Adicionar Insumo", command=lambda: adicionar_material(self), style='Blue.TButton')
+        self.botao_adicionar_resource = ttk.Button(frame_popup_produto, text="Adicionar Recurso", command=lambda: adicionar_resource(self), style='Blue.TButton')
 
         self.botao_cancelar_produto = ttk.Button(frame_popup_produto, text="Cancelar", command=self.limpar_campos_produtos, style='Red.TButton')
         
         # Vincula a função de filtro ao Combobox
-        self.var_filtro_materiais.trace_add('write', lambda *args: atualizar_combobox_materiais(self, is_filter=True))
+        self.var_filtro_resources.trace_add('write', lambda *args: update_combobox_resources(self, is_filter=True))
 
-        self.lista_materiais_selecionados = ttk.Treeview(frame_popup_produto, columns=("Material ID", "Material", "Quantidade Utilizada", "Valor Gasto"))
-        self.lista_materiais_selecionados.heading("#0", text="", anchor=tk.W)
-        self.lista_materiais_selecionados.heading("#1", text="Material ID", anchor=tk.W)
-        self.lista_materiais_selecionados.heading("#2", text="Material")
-        self.lista_materiais_selecionados.heading("#3", text="Quantidade Utilizada")
-        self.lista_materiais_selecionados.heading("#4", text="Valor Gasto")
-        self.lista_materiais_selecionados.column("#0", width=0, stretch=tk.NO)
-        self.lista_materiais_selecionados.column("#1", width=0, stretch=tk.NO)
-        self.lista_materiais_selecionados.bind("<Double-1>", lambda event: remove_material_selecionado(self))
+        self.selected_resources_list = ttk.Treeview(frame_popup_produto, columns=("ResourceId", "ResourceName", "UsedQuantity", "SpentAmount"))
+        self.selected_resources_list.heading("#0", text="", anchor=tk.W)
+        self.selected_resources_list.heading("#1", text="ID", anchor=tk.W)
+        self.selected_resources_list.heading("#2", text="Nome do Recurso")
+        self.selected_resources_list.heading("#3", text="Quantidade Utilizada")
+        self.selected_resources_list.heading("#4", text="Valor Gasto")
+        self.selected_resources_list.column("#0", width=0, stretch=tk.NO)
+        self.selected_resources_list.column("#1", width=0, stretch=tk.NO)
+        self.selected_resources_list.bind("<Double-1>", lambda event: remove_resource_selecionado(self))
 
         if produto:
-            self.materiais_selecionados = produto["Materiais"]
-            self.entrada_produto_nome.insert(0, produto["Nome"])  # Preencha com o nome atual do produto
-            self.entrada_margem_lucro_atacado.insert(0, produto["Margem de Lucro Atacado"])  # Preencha com a margem de lucro atual do produto
-            self.entrada_margem_lucro_varejo.insert(0, produto["Margem de Lucro Varejo"])  # Preencha com a margem de lucro atual do produto
-            self.combobox_tipo.insert(0, produto["Tipo"])  # Preencha com o tipo do produto
-            self.combobox_calcula_tempo.insert(0, produto["Calcula Tempo Gasto"])  # Preencha com o booleano se calcula ou nao o tempo gasto
-            self.atualizar_lista_materiais_selecionados()
+            self.selected_resources = produto["Resources"]
+            self.entrada_produto_nome.insert(0, produto["Name"])  # Preencha com o nome atual do produto
+            self.entrada_margem_lucro_atacado.insert(0, produto["WholesaleProfitMargin"])  # Preencha com a margem de lucro atual do produto
+            self.entrada_margem_lucro_varejo.insert(0, produto["RetailProfitMargin"])  # Preencha com a margem de lucro atual do produto
+            self.combobox_tipo.insert(0, produto["Type"])  # Preencha com o tipo do produto
+            self.combobox_calcula_tempo.insert(0, produto["CalculateTimeSpent"])  # Preencha com o booleano se calcula ou nao o tempo gasto
+            self.atualizar_selected_resources_list()
             self.entrada_produto_nome.config(state='disable')
             self.combobox_tipo.config(state='disable')
             self.botao_atualizar_produto = ttk.Button(frame_popup_produto, text="Salvar Edição", command=lambda: atualizar_produto(self, produto), style='Green.TButton', state='enabled')
@@ -244,16 +244,16 @@ class SaleMate:
         self.entrada_margem_lucro_varejo.grid(row=3, column=1, padx=5, pady=5)
         self.label_calcula_tempo.grid(row=4, column=0, padx=5, pady=5, sticky=tk.W)
         self.combobox_calcula_tempo.grid(row=4, column=1, padx=5, pady=5)
-        self.label_produto_materiais.grid(row=5, column=0, padx=5, pady=5, sticky=tk.W)
-        self.combobox_materiais.grid(row=5, column=1, padx=5, pady=5)
+        self.label_product_resources.grid(row=5, column=0, padx=5, pady=5, sticky=tk.W)
+        self.combobox_resources.grid(row=5, column=1, padx=5, pady=5)
         self.label_quantidade_utilizada.grid(row=6, column=0, padx=5, pady=5, sticky=tk.W)
         self.entrada_quantidade_utilizada.grid(row=6, column=1, padx=5, pady=5, sticky=tk.W)
-        self.botao_adicionar_material.grid(row=6, column=0, padx=5, pady=5, columnspan=2, sticky=tk.E)
-        self.lista_materiais_selecionados.grid(row=7, column=0, columnspan=2, padx=5, pady=5, sticky='nsew')
+        self.botao_adicionar_resource.grid(row=6, column=0, padx=5, pady=5, columnspan=2, sticky=tk.E)
+        self.selected_resources_list.grid(row=7, column=0, columnspan=2, padx=5, pady=5, sticky='nsew')
         self.botao_atualizar_produto.grid(row=8, column=0, padx=5, pady=5, columnspan=2, sticky=tk.W)
         self.botao_cancelar_produto.grid(row=8, column=1, padx=5, pady=5, columnspan=2, sticky=tk.E)
 
-        atualizar_combobox_materiais(self, True)
+        update_combobox_resources(self, True)
 
     def show_config_window(self):
 
@@ -266,10 +266,10 @@ class SaleMate:
         self.frame_popup_config = ttk.Frame(self.window_configs)
         self.frame_popup_config.pack(padx=10, pady=10, fill='both', expand=True)
 
-        self.define_screen_size(self.window_configs, 770,340)
+        self.define_screen_size(self.window_configs, 830,410)
 
         # Informações pessoais
-        self.label_personal_info = ttk.Label(self.frame_popup_config, text="INFORMAÇÕES PESSOAIS", font=("TkDefaultFont", 12, "bold"))
+        self.label_personal_info = ttk.Label(self.frame_popup_config, text="Dados Pessoais do Usuário", font=("TkDefaultFont", 12, "bold"))
         self.label_personal_info.grid(row=0, column=0, columnspan=4, padx=5, pady=5, sticky="w")
 
         self.label_name = ttk.Label(self.frame_popup_config, text="Nome Completo:")
@@ -297,7 +297,7 @@ class SaleMate:
         self.combo_country = ttk.Combobox(self.frame_popup_config, values=self.countries, width=37)
 
         # Campos de trabalho
-        self.label_work_info = ttk.Label(self.frame_popup_config, text="INFORMAÇÕES DE TRABALHO", font=("TkDefaultFont", 12, "bold"))
+        self.label_work_info = ttk.Label(self.frame_popup_config, text="Informações da Empresa", font=("TkDefaultFont", 12, "bold"))
         self.label_work_info.grid(row=10, column=0, columnspan=4, padx=5, pady=5, sticky="w")
 
         self.label_company_name = ttk.Label(self.frame_popup_config, text="Nome da Empresa:")
@@ -308,6 +308,16 @@ class SaleMate:
         self.entry_hours = ttk.Entry(self.frame_popup_config, width=10)
         self.label_hourly_rate = ttk.Label(self.frame_popup_config, text="Valor da Hora:")
         self.entry_hourly_rate = ttk.Entry(self.frame_popup_config, width=10)
+
+        # Campos de sistema
+        self.label_work_info = ttk.Label(self.frame_popup_config, text="Configurações do Sistema", font=("TkDefaultFont", 12, "bold"))
+        self.label_work_info.grid(row=13, column=0, columnspan=4, padx=5, pady=5, sticky="w")
+
+        self.label_limit_time_in_days = ttk.Label(self.frame_popup_config, text="Dias para Atualização:")
+        self.entry_limit_time_in_days = ttk.Entry(self.frame_popup_config, width=40)
+
+        self.label_remind_update = ttk.Label(self.frame_popup_config, text="Lembrete de Atualização:")
+        self.checkbox_remind_update = tk.Checkbutton(self.frame_popup_config, variable=self.remind_update_var)
 
         # Organize os rótulos e campos em várias colunas
         self.label_name.grid(row=2, column=0, padx=5, pady=5, sticky="w")
@@ -338,11 +348,16 @@ class SaleMate:
         self.label_hourly_rate.grid(row=12, column=2, padx=5, pady=5, sticky="w")
         self.entry_hourly_rate.grid(row=12, column=3, padx=5, pady=5, sticky="w")
 
+        self.label_limit_time_in_days.grid(row=14, column=0, columnspan=4, padx=5, pady=5, sticky="w")
+        self.entry_limit_time_in_days.grid(row=14, column=1, columnspan=4, padx=5, pady=5, sticky="w")
+        self.label_remind_update.grid(row=14, column=2, padx=5, pady=5, sticky="w")
+        self.checkbox_remind_update.grid(row=14, column=3, padx=5, pady=5, sticky="w")
+
         self.save_config_button = ttk.Button(self.frame_popup_config, text="Salvar", command=lambda: save_config_to_json(self),style='Green.TButton')
         self.cancel_config_button = ttk.Button(self.frame_popup_config, text="Cancelar", command=self.limpar_campos_config, style='Red.TButton')
 
-        self.save_config_button.grid(row=13, column=0, padx=5, pady=5, columnspan=2, sticky="w")
-        self.cancel_config_button.grid(row=13, column=2, padx=5, pady=5, columnspan=2, sticky="e")
+        self.save_config_button.grid(row=15, column=0, padx=5, pady=5, columnspan=2, sticky="w")
+        self.cancel_config_button.grid(row=15, column=2, padx=5, pady=5, columnspan=2, sticky="e")
 
         if self.system_config:
             self.entry_name.insert(0, self.system_config["Name"])
@@ -358,6 +373,13 @@ class SaleMate:
             self.entry_company_code_cnpj_cpf.insert(0, self.system_config["WorkInfo"]["CompanyCode"])
             self.entry_hours.insert(0, self.system_config["WorkInfo"]["HoursPerDay"])
             self.entry_hourly_rate.insert(0, self.system_config["WorkInfo"]["HourlyRate"])
+            self.entry_limit_time_in_days.insert(0, self.system_config["SystemConfig"]["LimitTimeInDays"])
+            if self.system_config and "SystemConfig" in self.system_config and "RemindUpdate" in self.system_config["SystemConfig"]:
+                remind_update = self.system_config["SystemConfig"]["RemindUpdate"]
+                if remind_update:
+                    self.checkbox_remind_update.select()
+                else:
+                    self.checkbox_remind_update.deselect()
         else:
             self.window_configs.protocol("WM_DELETE_WINDOW", self.on_config_window_close)
             self.cancel_config_button.config(state='disable')
@@ -376,26 +398,26 @@ class SaleMate:
         except AttributeError:
             pass
 
-    def limpar_campos_materiais(self):
+    def limpar_campos_resources(self):
         try:
-            self.janela_popup_material.destroy()
+            self.janela_popup_resource.destroy()
         except AttributeError:
             pass
 
     def limpar_campos_produtos(self):
-        self.materiais_selecionados = []
+        self.selected_resources = []
         try:
             self.janela_popup_produto.destroy()
         except AttributeError:
             pass
 
-    def atualizar_lista_materiais_selecionados(self):
+    def atualizar_selected_resources_list(self):
         
-        for item in self.lista_materiais_selecionados.get_children():
-            self.lista_materiais_selecionados.delete(item)
+        for item in self.selected_resources_list.get_children():
+            self.selected_resources_list.delete(item)
 
-        for material in self.materiais_selecionados:
-            self.lista_materiais_selecionados.insert("", "end", values=(material["Material ID"], material["Material"], material["Quantidade Utilizada"], locale.currency(material["Valor Gasto"], grouping=True)))
+        for resource in self.selected_resources:
+            self.selected_resources_list.insert("", "end", values=(resource["ResourceId"], resource["ResourceName"], resource["UsedQuantity"], locale.currency(resource["SpentAmount"], grouping=True)))
 
     def popup_erro(self, mensagem):
         popup_erro = tk.Toplevel()
@@ -408,16 +430,16 @@ class SaleMate:
         botao_fechar_erro = tk.Button(popup_erro, text="Fechar", command=popup_erro.destroy)
         botao_fechar_erro.pack()
 
-        self.define_screen_size(popup_erro, 300,60)
+        self.define_screen_size(popup_erro, 500,60)
     
-    # Função para abrir a janela de edição de um material
-    def editar_material(self, event):
-        selected_item = self.lista_materiais.selection()
+    # Função para abrir a janela de edição de um resource
+    def editar_resource(self, event):
+        selected_item = self.lista_resources.selection()
         if selected_item:
-            item_id = self.lista_materiais.item(selected_item)["values"][0]
-            material = encontrar_material_por_id(self, item_id)
-            if material:
-                self.mostrar_campos_material(material)
+            item_id = self.lista_resources.item(selected_item)["values"][0]
+            resource = encontrar_resource_por_id(self, item_id)
+            if resource:
+                self.mostrar_campos_resource(resource)
 
     # Função para abrir a janela de edição de um produto
     def editar_produto(self, event):

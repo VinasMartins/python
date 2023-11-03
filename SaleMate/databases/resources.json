@@ -1,0 +1,74 @@
+[
+    {
+        "ID": "314d6741-fd0a-4954-8acb-01c0422c83ae",
+        "Name": "Fita Gorgurao Yama N9",
+        "Quantity": 1000,
+        "PaidAmount": 9.85,
+        "UnitPrice": 0.00985,
+        "UnitMeasure": "Cent\u00edmetros"
+    },
+    {
+        "ID": "5dade3ca-4df1-47c9-b5b1-04a2f65b9a00",
+        "Name": "Bico de Pato 6cm",
+        "Quantity": 50,
+        "PaidAmount": 19.0,
+        "UnitPrice": 0.38,
+        "UnitMeasure": "Unidades"
+    },
+    {
+        "ID": "c9f6f559-d420-41ad-83df-f8a9a8b2cb2c",
+        "Name": "Fita Gorgurao Yama N2",
+        "Quantity": 1000,
+        "PaidAmount": 4.4,
+        "UnitPrice": 0.0044,
+        "UnitMeasure": "Cent\u00edmetros"
+    },
+    {
+        "ID": "56c92b22-2c4c-4276-a090-7b9431381108",
+        "Name": "Manta Strass",
+        "Quantity": 450,
+        "PaidAmount": 15.0,
+        "UnitPrice": 0.03333333333333333,
+        "UnitMeasure": "cm\u00b2"
+    },
+    {
+        "ID": "a7f952db-91ec-4425-aff6-8ca83166b648",
+        "Name": "Fita Gorgur\u00e3o Sanding N9",
+        "Quantity": 1000,
+        "PaidAmount": 11.5,
+        "UnitPrice": 0.0115,
+        "UnitMeasure": "Cent\u00edmetros"
+    },
+    {
+        "ID": "ba222311-e742-41cc-b01c-fb63fdbc61ad",
+        "Name": "Tiara dentinho ",
+        "Quantity": 12,
+        "PaidAmount": 15.0,
+        "UnitPrice": 1.25,
+        "UnitMeasure": "Unidades"
+    },
+    {
+        "ID": "c0ef19fe-0a42-4196-b27d-b354065d2ba0",
+        "Name": "Papel Offset 240g",
+        "Quantity": 250,
+        "PaidAmount": 60.0,
+        "UnitPrice": 0.24,
+        "UnitMeasure": "Unidades"
+    },
+    {
+        "ID": "d4c7db21-88e6-4b75-8b44-f44bab294843",
+        "Name": "Fita Gorgurao Sanding N9",
+        "Quantity": 1000,
+        "PaidAmount": 10.0,
+        "UnitPrice": 0.01,
+        "UnitMeasure": "Cent\u00edmetros"
+    },
+    {
+        "ID": "766a9d9b-00fc-4c27-98f7-11bd3d493bd5",
+        "Name": "Valor Hora",
+        "Quantity": 60,
+        "PaidAmount": 30.0,
+        "UnitPrice": 0.5,
+        "UnitMeasure": "Minutos"
+    }
+]
