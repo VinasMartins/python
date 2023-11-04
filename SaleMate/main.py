@@ -116,7 +116,6 @@ class SaleMate:
     
     def mostrar_campos_resource(self, resource=None):
         self.limpar_campos_resources()
-        print(resource)
 
         # Cria uma janela popup para a edição de resources
         self.janela_popup_resource = tk.Toplevel(self.aba_resources)
