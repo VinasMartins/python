@@ -59,7 +59,6 @@ def atualizar_produto(self, produto):
                 preco_custo += resource["SpentAmount"]
             else:
                 preco_custo += resource["SpentAmount"]
-            print(mao_de_obra_custo)
         preco_atacado = (preco_custo)*(1+(margem_lucro_atacado/100))+mao_de_obra_custo
         preco_varejo = (preco_custo)*(1+(margem_lucro_varejo/100))+mao_de_obra_custo
         if (valor_hora_exists == True or calcula_tempo_str == 'N\u00e3o'):
